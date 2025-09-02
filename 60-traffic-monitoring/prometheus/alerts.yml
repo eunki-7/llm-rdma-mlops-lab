@@ -1,0 +1,21 @@
+groups:
+- name: gpu-and-latency
+  rules:
+  - alert: GPUHighUtilization
+    expr: avg_over_time(DCGM_FI_DEV_GPU_UTIL[2m]) > 95
+    for: 3m
+    labels: { severity: warning }
+    annotations:
+      summary: "GPU util > 95% for 3m"
+  - alert: VLLMHighLatency
+    expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job="vllm"}[2m])) by (le)) > 1.5
+    for: 2m
+    labels: { severity: warning }
+    annotations:
+      summary: "vLLM p95 latency > 1.5s"
+  - alert: DiskAlmostFull
+    expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) < 0.1
+    for: 5m
+    labels: { severity: critical }
+    annotations:
+      summary: "Root FS < 10% free"

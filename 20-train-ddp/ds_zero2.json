@@ -1,0 +1,20 @@
+{
+  "train_micro_batch_size_per_gpu": 1,
+  "gradient_accumulation_steps": 16,
+  "optimizer": {
+    "type": "AdamW",
+    "params": {
+      "lr": 2e-05
+    }
+  },
+  "zero_optimization": {
+    "stage": 2,
+    "overlap_comm": true,
+    "contiguous_gradients": true
+  },
+  "fp16": {
+    "enabled": true
+  },
+  "steps_per_print": 100,
+  "wall_clock_breakdown": false
+}

@@ -1,3 +1,7 @@
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/eunki-7/llm-rdma-mlops-lab)](https://github.com/eunki-7/llm-rdma-mlops-lab/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/eunki-7/llm-rdma-mlops-lab)](https://github.com/eunki-7/llm-rdma-mlops-lab/issues)
+
 # LLM RDMA + NCCL A100 4-Node Lab
 
 ![Architecture Diagram](./images/1.png)
@@ -9,6 +13,12 @@ This repository provides a **hands-on portfolio project** that sets up a distrib
 - **Monitoring** with Prometheus, Grafana, and NVIDIA DCGM.
 
 The example model used is HuggingFace **Qwen2-7B / Qwen2-7B-Instruct**.
+
+---
+
+## 🎯 Purpose
+A hands-on blueprint for enterprise-grade **distributed LLM training and serving operations**,  
+featuring **performance, scalability, and observability** best practices.
 
 ---
 

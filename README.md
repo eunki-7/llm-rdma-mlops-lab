@@ -23,14 +23,65 @@ The example model used is HuggingFace **Qwen2-7B / Qwen2-7B-Instruct**.
 ## 📂 Repository Structure
 ```text
 llm-rdma-nccl-a100-4n/
-├─ README.md
-├─ 00-prereq/
-├─ 10-nccl-tests/
-├─ 20-train-ddp/
-├─ 30-serve-vllm/
-├─ 40-k8s-optional/
-├─ 60-traffic-monitoring/
-└─ storage/
+├─ README.md                     # Main documentation with diagrams, setup guide, quick start
+
+├─ 00-prereq/                    # Prerequisites: environment preparation
+│  ├─ README.md                  # Overview of prerequisites
+│  └─ scripts/                   # Helper scripts
+│     ├─ nic_detect.sh           # Detect network interfaces and RDMA devices
+│     ├─ ssh_nopass.sh           # Configure passwordless SSH between nodes
+│     ├─ rdma_verify.sh          # Verify RDMA and Infiniband/ROCE connectivity
+│     └─ sysctl_rocev2_example.sh# Example sysctl tuning for RoCEv2 performance
+
+├─ 10-nccl-tests/                # NCCL communication tests across multiple nodes
+│  ├─ README.md                  # Instructions for running NCCL tests
+│  ├─ Dockerfile                 # Build image with nccl-tests
+│  ├─ Makefile                   # Build automation for Docker image
+│  ├─ hostfile.example           # Example MPI/hostfile listing node addresses
+│  └─ run_mpi.sh                 # Script to launch NCCL all_reduce performance tests
+
+├─ 20-train-ddp/                 # Distributed training using PyTorch DDP + DeepSpeed
+│  ├─ README.md                  # How to run multi-node supervised fine-tuning
+│  ├─ Dockerfile                 # Container with PyTorch/DeepSpeed/Transformers
+│  ├─ requirements.txt           # Python package dependencies
+│  ├─ ds_zero2.json              # DeepSpeed ZeRO-2 optimization config
+│  ├─ train_sft.py               # Example fine-tuning script (JSONL dataset)
+│  ├─ env.example                # Example environment variables for torchrun
+│  ├─ hostfile.example           # Example node hostfile for torchrun
+│  └─ launch_ds.sh               # Wrapper to start distributed training via torchrun
+
+├─ 30-serve-vllm/                # Model serving with vLLM
+│  ├─ README.md                  # vLLM serving instructions
+│  ├─ Dockerfile                 # Build container for vLLM API server
+│  ├─ env.example                # Example environment variables for serving
+│  ├─ start_vllm.sh              # Script to start vLLM API server
+│  └─ nginx/                     # Optional NGINX router for load balancing
+│     ├─ Dockerfile              # NGINX container build
+│     └─ nginx.conf              # NGINX upstream configuration for vLLM nodes
+
+├─ 40-k8s-optional/              # Kubernetes manifests (optional deployment)
+│  ├─ README.md                  # How to use Kubernetes manifests
+│  ├─ vllm-deploy.yaml           # Deployment for vLLM pods with GPU requests
+│  └─ vllm-service.yaml          # Service exposing vLLM with LoadBalancer
+
+├─ 60-traffic-monitoring/        # Traffic routing and observability stack
+│  ├─ README.md                  # Monitoring and traffic overview
+│  ├─ haproxy/                   # HAProxy config with Prometheus exporter
+│  │  └─ haproxy.cfg             # HAProxy load balancing + metrics config
+│  ├─ prometheus/                # Prometheus config files
+│  │  ├─ prometheus.yml          # Prometheus scrape configs for exporters
+│  │  └─ alerts.yml              # Alerting rules (GPU util, latency, disk usage)
+│  ├─ grafana/                   # Grafana persistent storage (empty, populated at runtime)
+│  └─ docker-compose.yml         # Compose stack (Prometheus, Grafana, exporters, HAProxy)
+
+└─ storage/                      # Shared storage setup (NFS + rsync)
+   ├─ README.md                  # Storage overview
+   ├─ nfs/                       # NFS server and client setup
+   │  ├─ server_setup.sh         # Configure NFS server on node0
+   │  ├─ client_mount.sh         # Mount NFS shares on client nodes
+   │  └─ exports.example         # Example /etc/exports file
+   └─ rsync/                     # Rsync utilities
+      └─ sync_outputs.sh         # Sync training outputs from local SSD → NFS
 ```
 See each folder's README for details.
 
